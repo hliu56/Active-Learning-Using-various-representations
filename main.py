@@ -1,5 +1,37 @@
+import iGS
+import GSx
+import GSy
+import Uncertainty
+import random
+from utils import get_input
+from utils import normalized_data
+
+# Hyperparameters
+numDataTotal = 509
+labeledPoolN = 10
+batchSz = 1
+nAccs = (numDataTotal-labeledPoolN)//batchSz
+RepeatTimes = 20
+# Get the input files
+X, y = get_input()
+
 def main():
-    datax = GSx(data)
+    R2Smooth_std2, accuracySmooth2, InfoSmooth_std2, InfoSmooth_mean2,\
+    MSEsmooth_std2,MSEsmooth2,MAEsmooth_std2, MAEsmooth2,\
+    R2_train_std2, R2_train_mean2, R2_train_stdS2, R2_train_meanS2, SelectData = Uncertainty(X, y, runs=3)
+    
+    R2Smooth_std3, accuracySmooth3, InfoSmooth_std3, InfoSmooth_mean3,\
+    MSEsmooth_std3,MSEsmooth3,MAEsmooth_std3, MAEsmooth3,\
+    R2_train_std3, R2_train_mean3, R2_train_stdS3, R2_train_meanS3, SelectData = GSx(X, y, runs=RepeatTimes)
+
+    R2Smooth_std4, accuracySmooth4, InfoSmooth_std4, InfoSmooth_mean4,\
+    MSEsmooth_std4,MSEsmooth4,MAEsmooth_std4, MAEsmooth4,\
+    R2_train_std4, R2_train_mean4, R2_train_stdS4, R2_train_meanS4, SelectData = GSy(X, y, runs=RepeatTimes)
+    
+    R2Smooth_std5, accuracySmooth5, InfoSmooth_std5, InfoSmooth_mean5,\
+    MSEsmooth_std5,MSEsmooth5,MAEsmooth_std5, MAEsmooth5,\
+    R2_train_std5, R2_train_mean5, R2_train_stdS5, R2_train_meanS5, SelectData = iGS(X, y, runs=RepeatTimes)
+    
 
 
 if __name__=="__main__":
