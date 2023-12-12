@@ -15,7 +15,7 @@ def normalized_data(df):
 
 
 def get_input(myfile):
-    myfile =r'Data/CombinedPSP.csv'
+    
     df_load = pd.read_csv(myfile)
 
     df_load['JSC']=df_load['JSC'].abs()
