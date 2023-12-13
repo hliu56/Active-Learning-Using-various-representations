@@ -6,6 +6,8 @@ from utils import getBatch
 import numpy as np
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
+import warnings
+warnings.filterwarnings('ignore')
 
 def RandomSampling(X, y, labeledPoolN, runs=20):
     R2Smooth = []
@@ -47,7 +49,7 @@ def RandomSampling(X, y, labeledPoolN, runs=20):
         R2Res_t = np.append(R2Res_t, R2_t, axis=0)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
-        for i in range(409):
+        for i in range(499):
             dataBatch, dataPool = getBatch(dataPool, 1)
             dataPoolL = np.vstack((dataPoolL, dataBatch))
 

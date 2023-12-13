@@ -6,6 +6,7 @@ from Random import RandomSampling
 from utils import get_input
 from utils import normalized_data
 import pickle
+import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
