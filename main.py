@@ -5,6 +5,8 @@ import Uncertainty
 from Random import RandomSampling
 from utils import get_input
 from utils import normalized_data
+from Save_data import save_data
+from Plot_performance import plot_performance
 import pickle
 import numpy as np
 import warnings
@@ -15,12 +17,13 @@ numDataTotal = 509
 labeledPoolN = 10
 batchSz = 1
 nAccs = (numDataTotal-labeledPoolN)//batchSz
-RepeatTimes = 1
+RepeatTimes = 2
 # Get the input files
 myfile =r'Data/CombinedPSP.csv'
 X, y = get_input(myfile)
 
 def main(save=False):
+    Alg='Random'
     # Run different algorithms to get model performance and labeled data pool
     R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
     MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
@@ -44,9 +47,13 @@ def main(save=False):
 
     # Save data
     if save:
+        results = save_data(R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+                            MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+                            R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1, Alg)
+
 
     # Plotting
-    ...
+    plot_performance(MAEsmooth1, MAEsmooth_std1, Alg)
     
 
 

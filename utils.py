@@ -15,7 +15,9 @@ def normalized_data(df):
 
 
 def get_input(myfile):
-    
+    '''
+    Get data with knowing salient features
+    '''
     df_load = pd.read_csv(myfile)
 
     df_load['JSC']=df_load['JSC'].abs()
@@ -32,6 +34,24 @@ def get_input(myfile):
     y = df_refine_standardize.loc[:,['JSC']]
 
     return X, y
+
+def get_input_all(myfile):
+    '''
+    Get all data without knowing salient features
+    '''
+    df_load = pd.read_csv(myfile)
+
+    df_load['JSC']=df_load['JSC'].abs()
+    df_reduce=df_load.iloc[:,3:]
+    df_refine=df_reduce.iloc[:,np.r_[0:3,4:23]]
+    
+    df_refine_standardize = normalized_data(df_refine)
+
+    X = df_refine_standardize.iloc[:,1:]    
+    y = df_refine_standardize.iloc[:,0:1]
+
+    return X, y
+
 
 # Hleper funcitons
 def computeR2(dataL, X_test, y_test):
