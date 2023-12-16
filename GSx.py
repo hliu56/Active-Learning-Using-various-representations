@@ -8,7 +8,7 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from scipy.spatial.distance import pdist, squareform
 
-def GSx(X, y, labeledPoolN, runs=20):
+def GSx_alg(X, y, labeledPoolN, runs=20):
     R2Smooth = []
     MSEsmooth = []
     MAEsmooth = []

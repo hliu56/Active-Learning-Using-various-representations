@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import metrics, preprocessing
 import sklearn.gaussian_process as gp
 from sklearn.gaussian_process.kernels import Matern
+import matplotlib.pyplot as plt
 
 
 def normalized_data(df):
@@ -54,7 +55,7 @@ def get_input_all(myfile):
 
 
 # Hleper funcitons
-def computeR2(dataL, X_test, y_test):
+def computeR2(dataL, X_test, y_test, fs=False):
     '''
     Calculating model performance for testing dataset.
 
@@ -69,67 +70,114 @@ def computeR2(dataL, X_test, y_test):
         MSE: mean square error.
         MAE: mean absolute error.
     '''
-    y_trainGP = dataL[:,-1]
-    X_trainGP = dataL[:,0:-1]
-    kernel = Matern(length_scale=1.0)
-    gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=99, n_restarts_optimizer=10)
-    gpr.fit(X_trainGP,y_trainGP)
-    y_pred,sigma = gpr.predict(X_test, return_std=True) 
-    r2 = metrics.r2_score(y_test, y_pred)
-    MSE = metrics.mean_squared_error(y_test, y_pred)
-    MAE = metrics.mean_absolute_error(y_test, y_pred)
+    if fs:
+        y_trainGP = dataL.iloc[:,-1]
+        X_trainGP = dataL.iloc[:,0:-1]
+        kernel = Matern(length_scale=1.0)
+        gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=99, n_restarts_optimizer=10)
+        gpr.fit(X_trainGP,y_trainGP)
+        y_pred,sigma = gpr.predict(X_test, return_std=True) 
+        r2 = metrics.r2_score(y_test, y_pred)
+        MSE = metrics.mean_squared_error(y_test, y_pred)
+        MAE = metrics.mean_absolute_error(y_test, y_pred)
+    else:
+        y_trainGP = dataL[:,-1]
+        X_trainGP = dataL[:,0:-1]
+        kernel = Matern(length_scale=1.0)
+        gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=99, n_restarts_optimizer=10)
+        gpr.fit(X_trainGP,y_trainGP)
+        y_pred,sigma = gpr.predict(X_test, return_std=True) 
+        r2 = metrics.r2_score(y_test, y_pred)
+        MSE = metrics.mean_squared_error(y_test, y_pred)
+        MAE = metrics.mean_absolute_error(y_test, y_pred)
+
     return np.array([[r2]]), gpr, np.array([[MSE]]),np.array([[MAE]])
 
-def computeR2_train(dataL, X_train, y_train):
+def computeR2_train(dataL, X_train, y_train, fs=False):
     '''
     Calculate the model performance for the initial 80% training data set
     '''
+    if fs:
+        y_trainGP = dataL.iloc[:,-1]
+        X_trainGP = dataL.iloc[:,0:-1]
+        kernel = Matern(length_scale=1.0)
+        gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=0, n_restarts_optimizer=10)
+        
+        gpr.fit(X_trainGP,y_trainGP)
+        y_pred,sigma = gpr.predict(X_train, return_std=True)
+        
+        r2 = metrics.r2_score(y_train, y_pred)
+        MSE = metrics.mean_squared_error(y_train, y_pred)
+        MAE = metrics.mean_absolute_error(y_train, y_pred)
 
-    y_trainGP = dataL[:,-1]
-    X_trainGP = dataL[:,0:-1]
-    kernel = Matern(length_scale=1.0)
-    gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=0, n_restarts_optimizer=10)
+    else:
+        y_trainGP = dataL[:,-1]
+        X_trainGP = dataL[:,0:-1]
+        kernel = Matern(length_scale=1.0)
+        gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=0, n_restarts_optimizer=10)
+        
+        gpr.fit(X_trainGP,y_trainGP)
+        y_pred,sigma = gpr.predict(X_train, return_std=True)
+        
+        r2 = metrics.r2_score(y_train, y_pred)
+        MSE = metrics.mean_squared_error(y_train, y_pred)
+        MAE = metrics.mean_absolute_error(y_train, y_pred)
     
-    gpr.fit(X_trainGP,y_trainGP)
-    y_pred,sigma = gpr.predict(X_train, return_std=True)
-    
-    r2 = metrics.r2_score(y_train, y_pred)
-    MSE = metrics.mean_squared_error(y_train, y_pred)
-    MAE = metrics.mean_absolute_error(y_train, y_pred)
     return np.array([[r2]]), gpr, np.array([[MSE]]),np.array([[MAE]])
 
-def computeR2_train_self(dataL):
+
+def computeR2_train_self(dataL, fs=False):
     '''
     Calculate the model performance for the labled data pool
     '''
+    if fs:
+        y_trainGP = dataL.iloc[:,-1]
+        X_trainGP = dataL.iloc[:,0:-1]
+        kernel = Matern(length_scale=1.0)
+        gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=0, n_restarts_optimizer=10)
+        
+        gpr.fit(X_trainGP,y_trainGP)
+        y_pred,sigma = gpr.predict(X_trainGP, return_std=True)
+        
+        r2 = metrics.r2_score(y_trainGP, y_pred)
+        MSE = metrics.mean_squared_error(y_trainGP, y_pred)
+        MAE = metrics.mean_absolute_error(y_trainGP, y_pred)
 
-    y_trainGP = dataL[:,-1]
-    X_trainGP = dataL[:,0:-1]
-    kernel = Matern(length_scale=1.0)
-    gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=0, n_restarts_optimizer=10)
-    
-    gpr.fit(X_trainGP,y_trainGP)
-    y_pred,sigma = gpr.predict(X_trainGP, return_std=True)
-    
-    r2 = metrics.r2_score(y_trainGP, y_pred)
-    MSE = metrics.mean_squared_error(y_trainGP, y_pred)
-    MAE = metrics.mean_absolute_error(y_trainGP, y_pred)
-
+    else:
+        y_trainGP = dataL[:,-1]
+        X_trainGP = dataL[:,0:-1]
+        kernel = Matern(length_scale=1.0)
+        gpr=gp.GaussianProcessRegressor(kernel=kernel, random_state=0, n_restarts_optimizer=10)
+        
+        gpr.fit(X_trainGP,y_trainGP)
+        y_pred,sigma = gpr.predict(X_trainGP, return_std=True)
+        
+        r2 = metrics.r2_score(y_trainGP, y_pred)
+        MSE = metrics.mean_squared_error(y_trainGP, y_pred)
+        MAE = metrics.mean_absolute_error(y_trainGP, y_pred)
+  
     return np.array([[r2]]), gpr, np.array([[MSE]]),np.array([[MAE]])
 
-def computeR2_unlabel(data, data_label, model):
+
+def computeR2_unlabel(data, data_label, model, fs=False):
     '''
     Calculate the model performance for the unlabled data pool
     '''
-     
-    y_trainGP = data[:,-1]
-    X_trainGP = data[:,0:-1]
-    y_pred,sigma = model.predict(X_trainGP, return_std=True)
-    sigma_average = np.mean(sigma)
+    if fs:
+        y_trainGP = data.iloc[:,-1]
+        X_trainGP = data.iloc[:,0:-1]
+        y_pred,sigma = model.predict(X_trainGP, return_std=True)
+        sigma_average = np.mean(sigma)
+    else: 
+        y_trainGP = data[:,-1]
+        X_trainGP = data[:,0:-1]
+        y_pred,sigma = model.predict(X_trainGP, return_std=True)
+        sigma_average = np.mean(sigma)
+
     return np.array([[sigma_average]])
 
 
-def getBatch(dataPool, batchSz):
+def getBatch(dataPool, batchSz, fs=False):
     '''
     Get certain batch size of data
 
@@ -141,15 +189,22 @@ def getBatch(dataPool, batchSz):
         dataBatch: the selected batch of sample from unlabeled data pool.
         dataPool: the updated unlabeled data pool.
     '''
-    
-    SelectIdx=np.random.choice(dataPool.shape[0], batchSz, replace=False)
-    dataBatch = dataPool[SelectIdx, :]
-    dataPool = np.delete(dataPool,SelectIdx,0)
-    
+
+    if fs:
+        # SelectIdx=np.random.choice(dataPool.shape[0], batchSz, replace=False)
+        SelectIdx=np.random.choice(dataPool.index, batchSz, replace=False)
+        dataBatch = dataPool.iloc[SelectIdx, :]
+        dataPool = dataPool.drop(SelectIdx)
+
+    else: 
+        SelectIdx=np.random.choice(dataPool.shape[0], batchSz, replace=False)
+        dataBatch = dataPool[SelectIdx, :]
+        dataPool = np.delete(dataPool,SelectIdx,0)
+
     return dataBatch, dataPool
 
 
-def getUcertainPoint(dataPool, cModel): 
+def getUcertainPoint(dataPool, cModel, fs=False): 
     '''
     Get the most uncertain sample from unlabeled data pool.
 
@@ -161,9 +216,15 @@ def getUcertainPoint(dataPool, cModel):
         bestUcertainPoint: the selected most uncertain sample from unlabeled data pool.
         dataPool: the updated unlabeled data pool.
     '''
+    if fs:
+        y_pred,sigma = cModel.predict(dataPool.iloc[:,:], return_std=True)
+        ibest = sigma.argsort()[-1:][::-1]
+        bestUcertainPoint = dataPool.iloc[ibest,:]
+        dataPool = dataPool.drop(ibest)
+    else:
+        y_pred,sigma = cModel.predict(dataPool[:,0:5], return_std=True)
+        ibest = sigma.argsort()[-1:][::-1]
+        bestUcertainPoint = dataPool[ibest,:]
+        dataPool = np.delete(dataPool,ibest,0)
 
-    y_pred,sigma = cModel.predict(dataPool[:,0:5], return_std=True)
-    ibest = sigma.argsort()[-1:][::-1]
-    bestUcertainPoint = dataPool[ibest,:]
-    dataPool = np.delete(dataPool,ibest,0)
     return bestUcertainPoint, dataPool
