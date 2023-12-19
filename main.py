@@ -3,13 +3,16 @@ from GSx import GSx_alg
 import GSy
 import Uncertainty
 from Random import RandomSampling
+from Random_fs import RandomSampling_fs
 from utils import get_input
+from utils import get_input_all
 from utils import normalized_data
 from Save_data import save_data
 from Plot_performance import plot_performance
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -21,10 +24,12 @@ nAccs = (numDataTotal-labeledPoolN)//batchSz
 RepeatTimes = 2
 # Get the input files
 myfile =r'Data/CombinedPSP.csv'
-X, y = get_input(myfile)
+# X, y = get_input(myfile)
+# If combine feature selection
+X, y = get_input_all(myfile)
 
 def main(save=False):
-    Alg='GSx'
+    Alg='Random_fs'
     # Run different algorithms to get model performance and labeled data pool
     # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
     # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
@@ -34,9 +39,9 @@ def main(save=False):
     # MSEsmooth_std2,MSEsmooth2,MAEsmooth_std2, MAEsmooth2,\
     # R2_train_std2, R2_train_mean2, R2_train_stdS2, R2_train_meanS2, SelectData2 = Uncertainty(X, y, runs=RepeatTimes )
     
-    R2Smooth_std3, accuracySmooth3, InfoSmooth_std3, InfoSmooth_mean3,\
-    MSEsmooth_std3,MSEsmooth3,MAEsmooth_std3, MAEsmooth3,\
-    R2_train_std3, R2_train_mean3, R2_train_stdS3, R2_train_meanS3, SelectData3 = GSx_alg(X, y, labeledPoolN, runs=RepeatTimes)
+    # R2Smooth_std3, accuracySmooth3, InfoSmooth_std3, InfoSmooth_mean3,\
+    # MSEsmooth_std3,MSEsmooth3,MAEsmooth_std3, MAEsmooth3,\
+    # R2_train_std3, R2_train_mean3, R2_train_stdS3, R2_train_meanS3, SelectData3 = GSx_alg(X, y, labeledPoolN, runs=RepeatTimes)
 
     # R2Smooth_std4, accuracySmooth4, InfoSmooth_std4, InfoSmooth_mean4,\
     # MSEsmooth_std4,MSEsmooth4,MAEsmooth_std4, MAEsmooth4,\
@@ -46,21 +51,28 @@ def main(save=False):
     # MSEsmooth_std5,MSEsmooth5,MAEsmooth_std5, MAEsmooth5,\
     # R2_train_std5, R2_train_mean5, R2_train_stdS5, R2_train_meanS5, SelectData5 = iGS(X, y, runs=RepeatTimes)
 
+    # AL&FS
+    R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+    MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+    R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
+        RandomSampling_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+    # 13 min/2 run
+
     # Save data
     if save:
-        # results1 = save_data(R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
-        #                     MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
-        #                     R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1, Alg)
+        results1 = save_data(R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+                            MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+                            R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1, Alg)
         
-        results3 = save_data(R2Smooth_std3, accuracySmooth3, InfoSmooth_std3, InfoSmooth_mean3,\
-                            MSEsmooth_std3,MSEsmooth3,MAEsmooth_std3, MAEsmooth3,\
-                            R2_train_std3, R2_train_mean3, R2_train_stdS3, R2_train_meanS3, SelectData3, Alg)
+        # results3 = save_data(R2Smooth_std3, accuracySmooth3, InfoSmooth_std3, InfoSmooth_mean3,\
+        #                     MSEsmooth_std3,MSEsmooth3,MAEsmooth_std3, MAEsmooth3,\
+        #                     R2_train_std3, R2_train_mean3, R2_train_stdS3, R2_train_meanS3, SelectData3, Alg)
     
 
 
     # Plotting
-    # plot_performance(MAEsmooth1, MAEsmooth_std1, Alg)
-    plot_performance(MAEsmooth3, MAEsmooth_std3, Alg)
+    plot_performance(MAEsmooth1, MAEsmooth_std1, Alg)
+    # plot_performance(MAEsmooth3, MAEsmooth_std3, Alg)
     
 
 

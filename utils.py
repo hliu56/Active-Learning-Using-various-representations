@@ -4,6 +4,7 @@ from sklearn import metrics, preprocessing
 import sklearn.gaussian_process as gp
 from sklearn.gaussian_process.kernels import Matern
 import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestRegressor
 
 
 def normalized_data(df):
@@ -186,22 +187,30 @@ def getBatch(dataPool, batchSz, fs=False):
         batchSz (int): the batch size of selecting samples.
 
     Returns:
-        dataBatch: the selected batch of sample from unlabeled data pool.
-        dataPool: the updated unlabeled data pool.
+        if fs:
+            dataBatch: the selected batch of sample from unlabeled data pool.
+            dataPool: the updated unlabeled data pool.
+            dataPool_ori: the unupdated data pool.
+        else:
+            dataBatch: the selected batch of sample from unlabeled data pool.
+            dataPool: the updated unlabeled data pool.
     '''
 
     if fs:
-        # SelectIdx=np.random.choice(dataPool.shape[0], batchSz, replace=False)
         SelectIdx=np.random.choice(dataPool.index, batchSz, replace=False)
-        dataBatch = dataPool.iloc[SelectIdx, :]
+        # print(f'SelectIdx: {SelectIdx}')
+        # remember the index not reset, so need to access the index by using loc
+        dataBatch = dataPool.loc[SelectIdx]
+        # dataBatch = dataPool.iloc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
+        # dataPool = dataPool.reset_index(drop=True)
 
     else: 
         SelectIdx=np.random.choice(dataPool.shape[0], batchSz, replace=False)
         dataBatch = dataPool[SelectIdx, :]
         dataPool = np.delete(dataPool,SelectIdx,0)
 
-    return dataBatch, dataPool
+    return dataBatch, dataPool, SelectIdx
 
 
 def getUcertainPoint(dataPool, cModel, fs=False): 
@@ -228,3 +237,51 @@ def getUcertainPoint(dataPool, cModel, fs=False):
         dataPool = np.delete(dataPool,ibest,0)
 
     return bestUcertainPoint, dataPool
+
+def feature_selection(X, y, fs_score, iter, Alg, dname=True):
+    '''
+    Using feature selection method to get features index
+    '''
+    if dname:
+        
+        feat_names=...
+    else:
+        feat_names = X.columns[:]
+        rf = RandomForestRegressor(random_state=99)
+        rf.fit(X, y)
+        print("Features sorted by their score:")
+        print(sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feat_names), reverse=True))
+
+        plt.figure(figsize=(12,10))
+        # plt.figure()
+        importances=rf.feature_importances_
+        x_plot = [2*i for i in range(len(importances))]
+        indices=np.argsort(importances)
+        # plt.title("Feature importances",fontsize=25)
+        plt.barh(x_plot, importances[indices],height=1.8,color='#1f77b4')
+        plt.xlabel("Feature importance score",fontsize=25)
+        plt.ylabel("Features",fontsize=25)
+        plt.yticks(x_plot, feat_names[indices],fontsize=20)
+        plt.xticks(fontsize=20)
+        plt.savefig(f'{Alg}_results_iteration_{iter}.png', bbox_inches='tight')
+    # plt.show()
+
+    final_indices = get_final_indices(importances, fs_score)
+
+    return final_indices
+
+def get_final_indices(importances_score, fs_score):
+    '''
+    Based on the requirement for feature importance score, choose the most important features'''
+    
+    indices = np.argsort(importances_score)[::-1]  # Sort indices in descending order of importances
+    cumulative_sum = 0.0
+    selected_indices = []
+    
+    for index in indices:
+        cumulative_sum += importances_score[index]
+        selected_indices.append(index)
+        if cumulative_sum > fs_score:
+            break
+            
+    return selected_indices

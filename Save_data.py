@@ -1,5 +1,8 @@
 import os
 import pickle
+from datetime import datetime
+current_datetime = datetime.now()
+formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
 
 def save_data(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, Alg):
 
@@ -20,7 +23,7 @@ def save_data(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, Alg):
 
     # Define the path to your local folder and filename
     folder_path = 'Results_Data/'
-    file_name = f'{Alg}_results_data_{current_date_time}.pkl'
+    file_name = f'{Alg}_results_data_{formatted_datetime}.pkl'
 
     # Save the results to a file in the specified folder
     with open(folder_path + file_name, 'wb') as file:
