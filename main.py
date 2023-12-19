@@ -28,12 +28,13 @@ myfile =r'Data/CombinedPSP.csv'
 # If combine feature selection
 X, y = get_input_all(myfile)
 
-def main(save=False):
+def main(save=True):
     Alg='Random_fs'
     # Run different algorithms to get model performance and labeled data pool
     # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
     # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
     # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = RandomSampling(X, y, labeledPoolN, runs=RepeatTimes)
+    #12min36s/2run
     
     # R2Smooth_std2, accuracySmooth2, InfoSmooth_std2, InfoSmooth_mean2,\
     # MSEsmooth_std2,MSEsmooth2,MAEsmooth_std2, MAEsmooth2,\
@@ -56,7 +57,7 @@ def main(save=False):
     MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
     R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
         RandomSampling_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
-    # 13 min/2 run
+    # 13min37s/2 run
 
     # Save data
     if save:

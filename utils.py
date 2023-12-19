@@ -243,27 +243,55 @@ def feature_selection(X, y, fs_score, iter, Alg, dname=True):
     Using feature selection method to get features index
     '''
     if dname:
-        
-        feat_names=...
+        # Dictionary to map old column names to new names
+        new_names = {
+                    'ABS_f_D': 'd1',
+                    'DISS_wf10_D': 'd2',
+                    'STAT_e': 'd3',
+                    'STAT_n_D': 'd4',
+                    'STAT_n_A': 'd5',
+                    'STAT_CC_D': 'd6',
+                    'STAT_CC_A': 'd7',
+                    'STAT_CC_D_An': 'd8',
+                    'STAT_CC_A_Ca': 'd9',
+                    'ABS_wf_D': 'd10',
+                    'DISS_f10_D': 'd11',
+                    'CT_f_e_conn': 'd12',
+                    'CT_f_conn_D_An': 'd13',
+                    'CT_f_conn_A_Ca': 'd14',
+                    'CT_e_conn': 'd15',
+                    'CT_e_D_An': 'd16',
+                    'CT_e_A_Ca': 'd17',
+                    'CT_f_D_tort1': 'd18',
+                    'CT_f_A_tort1': 'd19',
+                    'CT_n_D_adj_An': 'd20',
+                    'CT_n_A_adj_Ca': 'd21',           
+                }
+        # Rename columns in the DataFrame
+        df = X.rename(columns=new_names)
+        feat_names=df.columns[:]
+
     else:
         feat_names = X.columns[:]
-        rf = RandomForestRegressor(random_state=99)
-        rf.fit(X, y)
-        print("Features sorted by their score:")
-        print(sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feat_names), reverse=True))
 
-        plt.figure(figsize=(12,10))
-        # plt.figure()
-        importances=rf.feature_importances_
-        x_plot = [2*i for i in range(len(importances))]
-        indices=np.argsort(importances)
-        # plt.title("Feature importances",fontsize=25)
-        plt.barh(x_plot, importances[indices],height=1.8,color='#1f77b4')
-        plt.xlabel("Feature importance score",fontsize=25)
-        plt.ylabel("Features",fontsize=25)
-        plt.yticks(x_plot, feat_names[indices],fontsize=20)
-        plt.xticks(fontsize=20)
-        plt.savefig(f'{Alg}_results_iteration_{iter}.png', bbox_inches='tight')
+    rf = RandomForestRegressor(random_state=99)
+    rf.fit(X, y)
+    print("Features sorted by their score:")
+    print(sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feat_names), reverse=True))
+
+    plt.figure(figsize=(12,10))
+    # plt.figure()
+    importances=rf.feature_importances_
+    x_plot = [2*i for i in range(len(importances))]
+    indices=np.argsort(importances)
+    # plt.title("Feature importances",fontsize=25)
+    plt.barh(x_plot, importances[indices],height=1.8,color='#1f77b4')
+    plt.xlabel("Feature importance score",fontsize=25)
+    plt.ylabel("Features",fontsize=25)
+    plt.yticks(x_plot, feat_names[indices],fontsize=20)
+    plt.xticks(fontsize=20)
+    plt.savefig('Results_Plot/'+f'{Alg}_results_iteration_{iter}.png', bbox_inches='tight')
+    plt.close()
     # plt.show()
 
     final_indices = get_final_indices(importances, fs_score)
