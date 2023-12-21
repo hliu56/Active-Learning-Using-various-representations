@@ -3,7 +3,7 @@ import numpy as np
 
 
 def plot_performance(value, variance, Alg):
-
+    
     x_values = np.arange(len(value))
 
     plt.plot(x_values, value, label=Alg)
