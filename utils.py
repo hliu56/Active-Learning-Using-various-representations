@@ -226,9 +226,9 @@ def getUcertainPoint(dataPool, cModel, fs=False):
         dataPool: the updated unlabeled data pool.
     '''
     if fs:
-        y_pred,sigma = cModel.predict(dataPool.iloc[:,:], return_std=True)
+        y_pred,sigma = cModel.predict(dataPool.iloc[:,0:-1], return_std=True)
         ibest = sigma.argsort()[-1:][::-1]
-        bestUcertainPoint = dataPool.iloc[ibest,:]
+        bestUcertainPoint = dataPool.loc[ibest,:]
         dataPool = dataPool.drop(ibest)
     else:
         y_pred,sigma = cModel.predict(dataPool[:,0:5], return_std=True)
@@ -236,7 +236,7 @@ def getUcertainPoint(dataPool, cModel, fs=False):
         bestUcertainPoint = dataPool[ibest,:]
         dataPool = np.delete(dataPool,ibest,0)
 
-    return bestUcertainPoint, dataPool
+    return bestUcertainPoint, dataPool, ibest
 
 def feature_selection(X, y, fs_score, iter, Alg, dname=True):
     '''
