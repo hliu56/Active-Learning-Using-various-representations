@@ -15,7 +15,7 @@ from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def UncertaintySampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='Random_fs'):
+def UncertaintySampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='Uncertainty_fs'):
     R2Smooth = []
     MSEsmooth = []
     MAEsmooth = []
