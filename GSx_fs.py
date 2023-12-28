@@ -3,6 +3,7 @@ from utils import computeR2
 from utils import computeR2_train
 from utils import computeR2_train_self
 from utils import computeR2_unlabel
+from utils import feature_selection
 import numpy as np
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
@@ -23,21 +24,24 @@ def GSx_alg(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSx_fs'):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=rt)
         dataPool = pd.concat([X_train, y_train], axis=1)
         # Reset the index to ensure the indices are continuous integers
-        dataPool = dataPool.reset_index(drop=True)
-        SelectIdx=np.random.choice(dataPool.shape[0], labeledPoolN, replace=False)
+        # dataPool = dataPool.reset_index(drop=True)
+        SelectIdx=np.random.choice(dataPool.index, labeledPoolN, replace=False)
         dataPoolL = dataPool.iloc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
-        dataPool = dataPool.reset_index(drop=True)
+        # dataPool = dataPool.reset_index(drop=True)
         
-        data = np.hstack((X_train, np.atleast_2d(y_train)))
-        distX = squareform(pdist(data[:,0:-1]))
-    
+        data = pd.concat([X_train, y_train], axis=1)
+        # dataPool = dataPool.reset_index(drop=True)
+        distX = squareform(pdist(data.iloc[:,0:-1]))
+
         Idx = []
         Idx = SelectIdx.tolist()
         #Idx.append(SelectIdx)
         idsTest=np.arange(0,len(y_train))
         idsTest=np.delete(idsTest,Idx)
-    
+        # print(f'Idx: {len(Idx)}')
+        # print(f'idsTest: {idsTest.shape}')#here
+
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
         MAERes = np.empty((0,1), float)
@@ -45,41 +49,78 @@ def GSx_alg(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSx_fs'):
         R2Res_t = np.empty((0,1), float)
         R2Res_tS = np.empty((0,1), float)
 
-        R2, Model, MSEstart, MAEstart = computeR2(dataPoolL, X_test, y_test)
+        R2, Model, MSEstart, MAEstart = computeR2(dataPoolL, X_test, y_test, fs=True)
         R2Res = np.append(R2Res, R2, axis=0)
         MSERes = np.append(MSERes, MSEstart, axis=0)
         MAERes = np.append(MAERes, MAEstart, axis=0)
-        Info = computeR2_unlabel(dataPool, dataPoolL, Model)
+        Info = computeR2_unlabel(dataPool, dataPoolL, Model, fs=True)
         InfoRes = np.append(InfoRes, Info, axis=0)
 
-        R2_t, Model, MSEstart_t,_ = computeR2_train(dataPoolL, X_train, y_train)
+        R2_t, Model, MSEstart_t,_ = computeR2_train(dataPoolL, X_train, y_train, fs=True)
         R2Res_t = np.append(R2Res_t, R2_t, axis=0)
 
-        R2_tS, ModelS, MSEstart_tS,_ = computeR2_train_self(dataPoolL)
+        R2_tS, ModelS, MSEstart_tS,_ = computeR2_train_self(dataPoolL, fs=True)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
-        for i in range(11, 509):
-#         print(i)
+        # feature selection
+        indices = feature_selection(dataPoolL.iloc[:, 0:-1],dataPoolL.iloc[:, -1], fs_score, 0, Alg)
+        dataPoolL_fs = pd.concat([dataPoolL.iloc[:, 0:-1].iloc[:, indices],dataPoolL.iloc[:, -1]],axis=1)
+        dataPool_fs = pd.concat([dataPool.iloc[:, 0:-1].iloc[:, indices], dataPool.iloc[:, -1]],axis=1)
+        data_fs = pd.concat([data.iloc[:, 0:-1].iloc[:, indices], data.iloc[:, -1]],axis=1)
+
+        # get model with fewer features
+        # _, Model_fs, _, _ = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
+
+        for i in range(10, 509):
+    #         print(i)
+            distX = squareform(pdist(data_fs.iloc[:,0:-1]))
             dist=distX[np.ix_(idsTest, np.array(Idx[0:i]))].min(axis=1)
             idx=np.argmax(dist)
             Idx.append(idsTest[idx])
             idsTest=np.delete(idsTest,idx)
-            databatch=dataPool[idx,:]
-            dataPool=data[idsTest,:]
-            dataPoolL = np.vstack((dataPoolL, databatch))
+            # print(f'idx:{idx}')
+            # print(f'Idx: {len(Idx)}')
+            # print(f'idsTest: {idsTest.shape}')
 
-            cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test)
+            # not cancat with pd.series
+            databatch_fs=dataPool_fs.iloc[idx,:].to_frame().T
+            dataPool_fs=data_fs.iloc[idsTest,:]
+            dataPoolL_fs = pd.concat([dataPoolL_fs, databatch_fs], axis=0)
+
+            databatch=dataPool.iloc[idx,:].to_frame().T
+            dataPool=data.iloc[idsTest,:]
+            dataPoolL = pd.concat([dataPoolL, databatch], axis=0)
+
+            cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test, fs=True)#here
             R2Res = np.append(R2Res, cR2, axis=0)
             MSERes = np.append(MSERes, cMSE, axis=0)
             MAERes = np.append(MAERes, cMAE, axis=0)
-            cInfo = computeR2_unlabel(dataPool, dataPoolL, Model)
+            cInfo = computeR2_unlabel(dataPool, dataPoolL, Model, fs=True)
             InfoRes = np.append(InfoRes, cInfo, axis=0)
 
-            cR2_t, Model, cMSEstart_t,_ = computeR2_train(dataPoolL, X_train, y_train)
+            cR2_t, Model, cMSEstart_t,_ = computeR2_train(dataPoolL, X_train, y_train, fs=True)
             R2Res_t = np.append(R2Res_t, cR2_t, axis=0)
 
-            cR2_tS, ModelS, cMSEstart_tS,_ = computeR2_train_self(dataPoolL)
+            cR2_tS, ModelS, cMSEstart_tS,_ = computeR2_train_self(dataPoolL, fs=True)
             R2Res_tS = np.append(R2Res_tS, cR2_tS, axis=0)
+
+            if i % freq == 0:
+
+                # feature selection
+                indices = feature_selection(dataPoolL.iloc[:, 0:-1],dataPoolL.iloc[:, -1], fs_score, 0, Alg)
+                dataPoolL_fs = pd.concat([dataPoolL.iloc[:, 0:-1].iloc[:, indices],dataPoolL.iloc[:, -1]],axis=1)
+                dataPool_fs = pd.concat([dataPool.iloc[:, 0:-1].iloc[:, indices], dataPool.iloc[:, -1]],axis=1)
+                data_fs = pd.concat([data.iloc[:, 0:-1].iloc[:, indices], data.iloc[:, -1]],axis=1)
+        
+                # get model with fewer features
+                # _, Model_fs, _, _ = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
+
+                # R2Res = np.append(R2Res, cR2, axis=0)
+                # MSERes = np.append(MSERes, cMSE, axis=0)
+                # MAERes = np.append(MAERes, cMAE, axis=0)
+                # InfoRes = np.append(InfoRes, cInfo, axis=0)
+                # R2Res_t = np.append(R2Res_t, cR2_t, axis=0)
+                # R2Res_tS = np.append(R2Res_tS, cR2_tS, axis=0)
 
         R2Smooth.append(R2Res)
         MSEsmooth.append(MSERes)
