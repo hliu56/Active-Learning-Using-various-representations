@@ -29,6 +29,6 @@ def save_data(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, Alg):
     with open(folder_path + file_name, 'wb') as file:
         pickle.dump(results, file)
 
-    return results
+    
 
 
