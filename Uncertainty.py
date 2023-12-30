@@ -46,7 +46,7 @@ def UncertaintySampling(X, y, labeledPoolN, runs=20):
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
         for i in range(499):
-            dataPointUncertain,dataPool = getUcertainPoint(dataPool, Model) 
+            dataPointUncertain,dataPool,_ = getUcertainPoint(dataPool, Model) 
             dataPoolL = np.vstack((dataPoolL, dataPointUncertain))
 
             cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test)

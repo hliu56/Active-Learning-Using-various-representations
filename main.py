@@ -1,6 +1,6 @@
-import iGS
 from GSx import GSx_alg
-import GSy
+from GSy import GSy_alg
+from iGS import iGS_alg
 
 from Random import RandomSampling
 from Random_fs import RandomSampling_fs
@@ -39,28 +39,36 @@ def main(features_know=True):
     # Run different algorithms to get model performance and labeled data pool
     if features_know:
         X, y = get_input(myfile)
-        Alg='Random'
+        # Alg='Random'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = RandomSampling(X, y, labeledPoolN, runs=RepeatTimes)
+        #12min36s/2run
+        #2h19min33s/20run
+        
+        # Alg='Uncertainty'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = UncertaintySampling(X, y, labeledPoolN, runs=RepeatTimes )
+        # 2h02min33s/20runs
+        
+        # Alg='GSx'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = GSx_alg(X, y, labeledPoolN, runs=RepeatTimes)
+        #1h58min49s/20runs
+
+        # Alg='GSy'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = GSy_alg(X, y, labeledPoolN, runs=RepeatTimes)
+        # 5h19min02s/20runs
+        
+        Alg='iGS'
         R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
         MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
-        R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = RandomSampling(X, y, labeledPoolN, runs=RepeatTimes)
-        #12min36s/2run
-        #11h36min/20run
+        R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = iGS_alg(X, y, labeledPoolN, runs=RepeatTimes)
         
-        # R2Smooth_std2, accuracySmooth2, InfoSmooth_std2, InfoSmooth_mean2,\
-        # MSEsmooth_std2,MSEsmooth2,MAEsmooth_std2, MAEsmooth2,\
-        # R2_train_std2, R2_train_mean2, R2_train_stdS2, R2_train_meanS2, SelectData2 = Uncertainty(X, y, runs=RepeatTimes )
-        
-        # R2Smooth_std3, accuracySmooth3, InfoSmooth_std3, InfoSmooth_mean3,\
-        # MSEsmooth_std3,MSEsmooth3,MAEsmooth_std3, MAEsmooth3,\
-        # R2_train_std3, R2_train_mean3, R2_train_stdS3, R2_train_meanS3, SelectData3 = GSx_alg(X, y, labeledPoolN, runs=RepeatTimes)
-
-        # R2Smooth_std4, accuracySmooth4, InfoSmooth_std4, InfoSmooth_mean4,\
-        # MSEsmooth_std4,MSEsmooth4,MAEsmooth_std4, MAEsmooth4,\
-        # R2_train_std4, R2_train_mean4, R2_train_stdS4, R2_train_meanS4, SelectData4 = GSy(X, y, runs=RepeatTimes)
-        
-        # R2Smooth_std5, accuracySmooth5, InfoSmooth_std5, InfoSmooth_mean5,\
-        # MSEsmooth_std5,MSEsmooth5,MAEsmooth_std5, MAEsmooth5,\
-        # R2_train_std5, R2_train_mean5, R2_train_stdS5, R2_train_meanS5, SelectData5 = iGS(X, y, runs=RepeatTimes)
     else:
         X, y = get_input_all(myfile)
         # AL&FS
@@ -70,6 +78,7 @@ def main(features_know=True):
         R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
             RandomSampling_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
         # 13min37s/2 run
+        
 
         # AL&FS
         # Alg='Uncertainty_fs'

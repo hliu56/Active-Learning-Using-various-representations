@@ -6,7 +6,7 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 
-def GSy(X, y, labeledPoolN, runs=20):
+def GSy_alg(X, y, labeledPoolN, runs=20):
     R2Smooth = []
     MSEsmooth = []
     MAEsmooth = []

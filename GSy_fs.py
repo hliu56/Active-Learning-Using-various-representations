@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from scipy.spatial.distance import pdist, squareform
 import pandas as pd
 
-def GSy_alg(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSy_fs'):
+def GSy_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSy_fs'):
     R2Smooth = []
     MSEsmooth = []
     MAEsmooth = []

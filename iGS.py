@@ -9,7 +9,7 @@ from scipy.spatial.distance import pdist, squareform
 
 
 
-def iGS(X, y, labeledPoolN, runs=20):
+def iGS_alg(X, y, labeledPoolN, runs=20):
     R2Smooth = []
     MSEsmooth = []
     MAEsmooth = []
