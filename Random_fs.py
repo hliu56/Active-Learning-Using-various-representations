@@ -31,8 +31,10 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
         # Reset the index to ensure the indices are continuous integers
         # dataPool = dataPool.reset_index(drop=True)
         SelectIdx=np.random.choice(dataPool.index, labeledPoolN, replace=False)
+        print(f'SelectIdx:{SelectIdx}')
         dataPoolL = dataPool.iloc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
+        dataPool = dataPool.reset_index(drop=True)
 
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -45,14 +47,14 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
         R2_t, Model_t, MSEstart_t, _ = computeR2_train(dataPoolL, X_train, y_train, fs=True)
         R2_tS, Model_tS, MSEstart_tS, _ = computeR2_train_self(dataPoolL, fs=True)
         Info = computeR2_unlabel(dataPool, dataPoolL, Model, fs=True)
-        print(f'Info.shape: {Info.shape}')
-        print(f'R2.shape {R2.shape}')
+        # print(f'Info.shape: {Info.shape}')
+        # print(f'R2.shape {R2.shape}')
 
         R2Res = np.append(R2Res, R2, axis=0)
         MSERes = np.append(MSERes, MSEstart, axis=0)
         MAERes = np.append(MAERes, MAEstart, axis=0)
         InfoRes = np.append(InfoRes, Info, axis=0)
-        print(f'InfoRes {InfoRes}')
+        # print(f'InfoRes {InfoRes}')
 
         R2Res_t = np.append(R2Res_t, R2_t, axis=0)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)

@@ -276,8 +276,8 @@ def feature_selection(X, y, fs_score, iter, Alg, dname=True):
 
     rf = RandomForestRegressor(random_state=99)
     rf.fit(X, y)
-    print("Features sorted by their score:")
-    print(sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feat_names), reverse=True))
+    # print("Features sorted by their score:")
+    # print(sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feat_names), reverse=True))
 
     plt.figure(figsize=(12,10))
     # plt.figure()

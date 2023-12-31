@@ -32,7 +32,7 @@ myfile =r'Data/CombinedPSP.csv'
 # If combine feature selection
 # X, y = get_input_all(myfile)
 
-def main(features_know=True):
+def main(features_know=False):
     '''
     set the features_know = True if the features are known
     '''
@@ -68,7 +68,9 @@ def main(features_know=True):
         R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
         MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
         R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = iGS_alg(X, y, labeledPoolN, runs=RepeatTimes)
-        
+        # 5:27:02/20runs
+
+
     else:
         X, y = get_input_all(myfile)
         # AL&FS
