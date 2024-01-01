@@ -1,11 +1,12 @@
+from Random import RandomSampling
+from Uncertainty import UncertaintySampling
 from GSx import GSx_alg
 from GSy import GSy_alg
 from iGS import iGS_alg
 
-from Random import RandomSampling
 from Random_fs import RandomSampling_fs
 from Uncertainty_fs import UncertaintySampling_fs
-from Uncertainty import UncertaintySampling
+from GSx_fs import GSx_alg_fs
 
 
 from utils import get_input
@@ -74,20 +75,26 @@ def main(features_know=False):
     else:
         X, y = get_input_all(myfile)
         # AL&FS
-        Alg='Random_fs'
-        R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
-        MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
-        R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
-            RandomSampling_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+        # Alg='Random_fs'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
+        #     RandomSampling_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
         # 13min37s/2 run
-        
+        # 6:53:20
 
-        # AL&FS
         # Alg='Uncertainty_fs'
         # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
         # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
         # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
         #     UncertaintySampling_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+        # 1:33:56
+
+        Alg='GSx_alg_fs'
+        R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
+            GSx_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
 
     # Save data
     save_data(R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\

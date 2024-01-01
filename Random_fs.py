@@ -32,9 +32,9 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
         # dataPool = dataPool.reset_index(drop=True)
         SelectIdx=np.random.choice(dataPool.index, labeledPoolN, replace=False)
         print(f'SelectIdx:{SelectIdx}')
-        dataPoolL = dataPool.iloc[SelectIdx, :]
+        # use loc based on actual index not on the order
+        dataPoolL = dataPool.loc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
-        dataPool = dataPool.reset_index(drop=True)
 
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -43,10 +43,15 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
         R2Res_t = np.empty((0,1), float)
         R2Res_tS = np.empty((0,1), float)
 
-        R2, Model, MSEstart, MAEstart = computeR2(dataPoolL, X_test, y_test, fs=True)
-        R2_t, Model_t, MSEstart_t, _ = computeR2_train(dataPoolL, X_train, y_train, fs=True)
-        R2_tS, Model_tS, MSEstart_tS, _ = computeR2_train_self(dataPoolL, fs=True)
-        Info = computeR2_unlabel(dataPool, dataPoolL, Model, fs=True)
+        # feature selection
+        indices = feature_selection(dataPoolL.iloc[:, 0:-1],dataPoolL.iloc[:, -1], fs_score, 0, Alg)
+        dataPoolL_fs = pd.concat([dataPoolL.iloc[:, 0:-1].iloc[:, indices],dataPoolL.iloc[:, -1]],axis=1)
+        dataPool_fs = pd.concat([dataPool.iloc[:, 0:-1].iloc[:, indices], dataPool.iloc[:, -1]],axis=1)
+
+        R2, Model, MSEstart, MAEstart = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
+        R2_t, Model_t, MSEstart_t, _ = computeR2_train(dataPoolL_fs, X_train.iloc[:, indices], y_train, fs=True)
+        R2_tS, Model_tS, MSEstart_tS, _ = computeR2_train_self(dataPoolL_fs, fs=True)
+        Info = computeR2_unlabel(dataPool_fs, dataPoolL_fs, Model, fs=True)
         # print(f'Info.shape: {Info.shape}')
         # print(f'R2.shape {R2.shape}')
 
@@ -59,16 +64,13 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
         R2Res_t = np.append(R2Res_t, R2_t, axis=0)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
-        # feature selection
-        indices = feature_selection(dataPoolL.iloc[:, 0:-1],dataPoolL.iloc[:, -1], fs_score, 0, Alg)
-        dataPoolL_fs = pd.concat([dataPoolL.iloc[:, 0:-1].iloc[:, indices],dataPoolL.iloc[:, -1]],axis=1)
-        dataPool_fs = pd.concat([dataPool.iloc[:, 0:-1].iloc[:, indices], dataPool.iloc[:, -1]],axis=1)
+        
 
-        dataPoolL_init = dataPoolL
-        dataPool_init = dataPool
+        # dataPoolL_init = dataPoolL
+        # dataPool_init = dataPool
 
         for i in range(499):
-            print(f"Iteration: {i}")
+            # print(f"Iteration: {i}")
             # print(f"DataPool shape before getBatch(): {dataPool.shape}")
             # DataPool_ori = DataPool
             dataBatch_fs, dataPool_fs,Idx = getBatch(dataPool_fs, 1, fs=True)
@@ -82,10 +84,10 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
             dataPoolL = pd.concat([dataPoolL, dataBatch], axis=0, ignore_index=True)
             
 
-            cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test, fs=True)
-            cR2_t, Model_t, cMSEstart_t,_ = computeR2_train(dataPoolL, X_train, y_train, fs=True)
-            cR2_tS, Model_tS, cMSEstart_tS,_ = computeR2_train_self(dataPoolL, fs=True)
-            cInfo = computeR2_unlabel(dataPool, dataPoolL, Model, fs=True)
+            cR2, Model, cMSE, cMAE = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
+            cR2_t, Model_t, cMSEstart_t,_ = computeR2_train(dataPoolL_fs, X_train.iloc[:, indices], y_train, fs=True)
+            cR2_tS, Model_tS, cMSEstart_tS,_ = computeR2_train_self(dataPoolL_fs, fs=True)
+            cInfo = computeR2_unlabel(dataPool_fs, dataPoolL_fs, Model, fs=True)
 
             R2Res = np.append(R2Res, cR2, axis=0)
             MSERes = np.append(MSERes, cMSE, axis=0)
