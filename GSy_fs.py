@@ -22,9 +22,13 @@ def GSy_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSy_fs'
         np.random.seed(rt)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=rt)
         dataPool = pd.concat([X_train, y_train], axis=1)
+        dataPool = dataPool.reset_index(drop=True)
+
         SelectIdx=np.random.choice(dataPool.index, labeledPoolN, replace=False)
         dataPoolL = dataPool.loc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
+        # dataPool = dataPool.reset_index(drop=True)
+
         data = pd.concat([X_train, y_train], axis=1)
         
         Idx = []

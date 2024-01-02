@@ -7,6 +7,8 @@ from iGS import iGS_alg
 from Random_fs import RandomSampling_fs
 from Uncertainty_fs import UncertaintySampling_fs
 from GSx_fs import GSx_alg_fs
+from GSy_fs import GSy_alg_fs
+from iGS_fs import iGS_alg_fs
 
 
 from utils import get_input
@@ -90,11 +92,25 @@ def main(features_know=False):
         #     UncertaintySampling_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
         # 1:33:56
 
-        Alg='GSx_alg_fs'
+        # Alg='GSx_alg_fs'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
+        #     GSx_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+        #1:36:49
+
+        # Alg='GSy_alg_fs'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
+        #     GSy_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+        #4:57:24
+        
+        Alg='iGS_alg_fs'
         R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
         MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
         R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
-            GSx_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+            iGS_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
 
     # Save data
     save_data(R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\

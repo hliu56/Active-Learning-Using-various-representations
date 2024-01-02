@@ -22,9 +22,13 @@ def iGS_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='iGS_fs'
         np.random.seed(rt)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=rt)
         dataPool = pd.concat([X_train, y_train], axis=1)
+        dataPool = dataPool.reset_index(drop=True)
+
         SelectIdx=np.random.choice(dataPool.index, labeledPoolN, replace=False)
         dataPoolL = dataPool.loc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
+        # dataPool = dataPool.reset_index(drop=True)
+
         
         data = pd.concat([X_train, y_train], axis=1)
         distX = squareform(pdist(data.iloc[:,0:-1]))
@@ -102,9 +106,9 @@ def iGS_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='iGS_fs'
             cR2_tS, ModelS, cMSEstart_tS,_ = computeR2_train_self(dataPoolL_fs, fs=True)
             R2Res_tS = np.append(R2Res_tS, cR2_tS, axis=0)
 
-            if n % freq == 0:
+            if n % freq == 0 and n != 10:
                 # feature selection
-                indices = feature_selection(dataPoolL.iloc[:, 0:-1],dataPoolL.iloc[:, -1], fs_score, 0, Alg)
+                indices = feature_selection(dataPoolL.iloc[:, 0:-1],dataPoolL.iloc[:, -1], fs_score, n, Alg)
                 dataPoolL_fs = pd.concat([dataPoolL.iloc[:, 0:-1].iloc[:, indices],dataPoolL.iloc[:, -1]],axis=1)
                 dataPool_fs = pd.concat([dataPool.iloc[:, 0:-1].iloc[:, indices], dataPool.iloc[:, -1]],axis=1)
                 data_fs = pd.concat([data.iloc[:, 0:-1].iloc[:, indices], data.iloc[:, -1]],axis=1)

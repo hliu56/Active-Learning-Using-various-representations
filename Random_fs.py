@@ -64,10 +64,6 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
         R2Res_t = np.append(R2Res_t, R2_t, axis=0)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
-        
-
-        # dataPoolL_init = dataPoolL
-        # dataPool_init = dataPool
 
         for i in range(499):
             # print(f"Iteration: {i}")
