@@ -54,7 +54,7 @@ def GSx_alg(X, y, labeledPoolN, runs=20):
         R2_tS, ModelS, MSEstart_tS,_ = computeR2_train_self(dataPoolL)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
-        for i in range(11, 509):
+        for i in range(10, 509):
 #         print(i)
             dist=distX[np.ix_(idsTest, np.array(Idx[0:i]))].min(axis=1)
             idx=np.argmax(dist)
