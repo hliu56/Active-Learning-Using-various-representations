@@ -29,6 +29,27 @@ def save_data(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, Alg):
     with open(folder_path + file_name, 'wb') as file:
         pickle.dump(results, file)
 
+def save_data_optimal(r1, r2, r3, r4, r5, r6, r7, Alg):
+
+    results = {
+    'R2Smooth_std1': r1,
+    'accuracySmooth1': r2,
+    
+    'MSEsmooth_std1': r3,
+    'MSEsmooth1': r4,
+    'MAEsmooth_std1': r5,
+    'MAEsmooth1': r6,
+
+    'SelectData1': r7}
+
+    # Define the path to your local folder and filename
+    folder_path = 'Results_Data/'
+    file_name = f'{Alg}_results_data_{formatted_datetime}.pkl'
+
+    # Save the results to a file in the specified folder
+    with open(folder_path + file_name, 'wb') as file:
+        pickle.dump(results, file)
+
     
 
 
