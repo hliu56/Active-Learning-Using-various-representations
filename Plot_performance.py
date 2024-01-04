@@ -29,6 +29,7 @@ def plot_performance(value, variance, Alg, errorbar=False):
         plt.legend()
         # plt.grid(True)
         plt.savefig('Results_Plot_errorbar/'+f'PerformancePlot_{Alg}_{formatted_datetime}.png')
+        print('Plot completed')
 
     else:
         x_values = np.arange(len(value))
@@ -39,3 +40,4 @@ def plot_performance(value, variance, Alg, errorbar=False):
         plt.ylabel('MAE')
         plt.legend()
         plt.savefig('Results_Plot/'+f'PerformancePlot_{Alg}_{formatted_datetime}.png')
+        print('Plot completed')
