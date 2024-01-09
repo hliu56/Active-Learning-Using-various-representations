@@ -4,6 +4,7 @@ from GSx import GSx_alg
 from GSy import GSy_alg
 from iGS import iGS_alg
 from optimal import Optimal_test
+from optimal_fs import Optimal_test_fs
 
 from Random_fs import RandomSampling_fs
 from Uncertainty_fs import UncertaintySampling_fs
@@ -14,6 +15,7 @@ from iGS_fs import iGS_alg_fs
 
 from utils import get_input
 from utils import get_input_all
+from utils import get_input_optimal_fs
 from utils import normalized_data
 from Save_data import save_data
 from Save_data import save_data_optimal
@@ -37,7 +39,7 @@ myfile =r'Data/CombinedPSP.csv'
 # If combine feature selection
 # X, y = get_input_all(myfile)
 
-def main(features_know=True):
+def main(features_know=False):
     '''
     set the features_know = True if the features are known
     '''
@@ -83,7 +85,8 @@ def main(features_know=True):
 
 
     else:
-        X, y = get_input_all(myfile)
+        # X, y = get_input_all(myfile)
+
         # AL&FS
         # Alg='Random_fs'
         # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
@@ -114,11 +117,17 @@ def main(features_know=True):
         #     GSy_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
         #4:57:24
         
-        Alg='iGS_alg_fs'
-        R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # Alg='iGS_alg_fs'
+        # R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
+        # MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
+        # R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
+        #     iGS_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+        
+        X, y = get_input_optimal_fs(myfile)
+        Alg='optimal_fs'
+        R2Smooth_std1, accuracySmooth1,\
         MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
-        R2_train_std1, R2_train_mean1, R2_train_stdS1, R2_train_meanS1, SelectData1 = \
-            iGS_alg_fs(X, y, labeledPoolN, runs=RepeatTimes, freq=10, fs_score=0.98, Alg=Alg)
+        SelectData1 = Optimal_test_fs(X, y, runs=RepeatTimes)
 
     # Save data
     # save_data(R2Smooth_std1, accuracySmooth1, InfoSmooth_std1, InfoSmooth_mean1,\
@@ -129,6 +138,7 @@ def main(features_know=True):
     save_data_optimal(R2Smooth_std1, accuracySmooth1, \
             MSEsmooth_std1,MSEsmooth1,MAEsmooth_std1, MAEsmooth1,\
             SelectData1, Alg)
+    
     
 
 
