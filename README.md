@@ -1,3 +1,24 @@
 # Active-Learning-Using-various-representations
 
-This repository if for the active learning strategy implemented on various data representations in organic photovoltaics.
+# This repository if for the active learning strategy implemented on various data representations in organic photovoltaics.
+
+## Data desciption
+The data is in 'Data' folder, which contain input features and output property Jsc
+
+## Usage
+- Run main.py by selecting different active learning algorithms
+- There are 2 choices for getting input data: `get_input` for Active learning with known salient features, `get_input_all` for Active learning without known salient features
+- After run main.py, all results will store in the folder: 'Results_Data' or 'Results_Plot'
+## Analysis results
+- The results are in the folder: 'Results_Data' or 'Results_Plot'
+
+## Requirements for libraries
+- numpy
+- matplotlib
+- pandas
+- scikit-learn
+- scipy
+- pot
+
+## Licensing, Authors, and Acknowledgements
+This repository is on MIT license.
