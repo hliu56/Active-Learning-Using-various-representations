@@ -220,12 +220,9 @@ def getBatch(dataPool, batchSz, fs=False):
 
     if fs:
         SelectIdx=np.random.choice(dataPool.index, batchSz, replace=False)
-        # print(f'SelectIdx: {SelectIdx}')
         # remember the index not reset, so need to access the index by using loc
         dataBatch = dataPool.loc[SelectIdx]
-        # dataBatch = dataPool.iloc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
-        # dataPool = dataPool.reset_index(drop=True)
 
     else: 
         SelectIdx=np.random.choice(dataPool.shape[0], batchSz, replace=False)
@@ -302,7 +299,6 @@ def feature_selection(X, y, fs_score, iter, Alg, dname=True):
     # print(sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feat_names), reverse=True))
 
     plt.figure(figsize=(12,10))
-    # plt.figure()
     importances=rf.feature_importances_
     x_plot = [2*i for i in range(len(importances))]
     indices=np.argsort(importances)
