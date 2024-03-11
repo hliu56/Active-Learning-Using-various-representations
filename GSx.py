@@ -31,8 +31,8 @@ def GSx_alg(X, y, labeledPoolN, runs=20):
         Idx = []
         Idx = SelectIdx.tolist()
         #Idx.append(SelectIdx)
-        idsTest=np.arange(0,len(y_train))
-        idsTest=np.delete(idsTest,Idx)
+        ids_label=np.arange(0,len(y_train))
+        ids_label=np.delete(ids_label,Idx)
     
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -56,12 +56,12 @@ def GSx_alg(X, y, labeledPoolN, runs=20):
 
         for i in range(10, 509):
 #         print(i)
-            dist=distX[np.ix_(idsTest, np.array(Idx[0:i]))].min(axis=1)
+            dist=distX[np.ix_(ids_label, np.array(Idx[0:i]))].min(axis=1)
             idx=np.argmax(dist)
-            Idx.append(idsTest[idx])
-            idsTest=np.delete(idsTest,idx)
+            Idx.append(ids_label[idx])
+            ids_label=np.delete(ids_label,idx)
             databatch=dataPool[idx,:]
-            dataPool=data[idsTest,:]
+            dataPool=data[ids_label,:]
             dataPoolL = np.vstack((dataPoolL, databatch))
 
             cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test)

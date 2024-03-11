@@ -28,19 +28,14 @@ def GSx_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSx_fs'
         SelectIdx=np.random.choice(dataPool.index, labeledPoolN, replace=False)
         dataPoolL = dataPool.loc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
-        # dataPool = dataPool.reset_index(drop=True)
         
         data = pd.concat([X_train, y_train], axis=1)
-        # dataPool = dataPool.reset_index(drop=True)
         distX = squareform(pdist(data.iloc[:,0:-1]))
 
         Idx = []
         Idx = SelectIdx.tolist()
-        #Idx.append(SelectIdx)
-        idsTest=np.arange(0,len(y_train))
-        idsTest=np.delete(idsTest,Idx)
-        # print(f'Idx: {len(Idx)}')
-        # print(f'idsTest: {idsTest.shape}')#here
+        ids_label=np.arange(0,len(y_train))
+        ids_label=np.delete(ids_label,Idx)
 
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -68,27 +63,21 @@ def GSx_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSx_fs'
         R2_tS, ModelS, MSEstart_tS,_ = computeR2_train_self(dataPoolL_fs, fs=True)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
-        # get model with fewer features
-        # _, Model_fs, _, _ = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
-
         for i in range(10, 509):
     #         print(i)
             distX = squareform(pdist(data_fs.iloc[:,0:-1]))
-            dist=distX[np.ix_(idsTest, np.array(Idx[0:i]))].min(axis=1)
+            dist=distX[np.ix_(ids_label, np.array(Idx[0:i]))].min(axis=1)
             idx=np.argmax(dist)
-            Idx.append(idsTest[idx])
-            idsTest=np.delete(idsTest,idx)
-            # print(f'idx:{idx}')
-            # print(f'Idx: {len(Idx)}')
-            # print(f'idsTest: {idsTest.shape}')
+            Idx.append(ids_label[idx])
+            ids_label=np.delete(ids_label,idx)
 
             # not cancat with pd.series
             databatch_fs=dataPool_fs.iloc[idx,:].to_frame().T
-            dataPool_fs=data_fs.iloc[idsTest,:]
+            dataPool_fs=data_fs.iloc[ids_label,:]
             dataPoolL_fs = pd.concat([dataPoolL_fs, databatch_fs], axis=0)
 
             databatch=dataPool.iloc[idx,:].to_frame().T
-            dataPool=data.iloc[idsTest,:]
+            dataPool=data.iloc[ids_label,:]
             dataPoolL = pd.concat([dataPoolL, databatch], axis=0)
 
             cR2, Model, cMSE, cMAE = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)#here
@@ -111,16 +100,6 @@ def GSx_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSx_fs'
                 dataPoolL_fs = pd.concat([dataPoolL.iloc[:, 0:-1].iloc[:, indices],dataPoolL.iloc[:, -1]],axis=1)
                 dataPool_fs = pd.concat([dataPool.iloc[:, 0:-1].iloc[:, indices], dataPool.iloc[:, -1]],axis=1)
                 data_fs = pd.concat([data.iloc[:, 0:-1].iloc[:, indices], data.iloc[:, -1]],axis=1)
-        
-                # get model with fewer features
-                # _, Model_fs, _, _ = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
-
-                # R2Res = np.append(R2Res, cR2, axis=0)
-                # MSERes = np.append(MSERes, cMSE, axis=0)
-                # MAERes = np.append(MAERes, cMAE, axis=0)
-                # InfoRes = np.append(InfoRes, cInfo, axis=0)
-                # R2Res_t = np.append(R2Res_t, cR2_t, axis=0)
-                # R2Res_tS = np.append(R2Res_tS, cR2_tS, axis=0)
 
         R2Smooth.append(R2Res)
         MSEsmooth.append(MSERes)

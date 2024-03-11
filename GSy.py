@@ -27,8 +27,8 @@ def GSy_alg(X, y, labeledPoolN, runs=20):
         Idx = []
         Idx = SelectIdx.tolist()
         #Idx.append(SelectIdx)
-        idsTest=np.arange(0,len(y_train))
-        idsTest=np.delete(idsTest,Idx)
+        ids_label=np.arange(0,len(y_train))
+        ids_label=np.delete(ids_label,Idx)
     
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -61,9 +61,9 @@ def GSy_alg(X, y, labeledPoolN, runs=20):
 
             idx2=np.argmax(dist)
 
-            idsTest=np.delete(idsTest,idx2)
+            ids_label=np.delete(ids_label,idx2)
             databatch=dataPool[idx2,:]
-            dataPool=data[idsTest,:]
+            dataPool=data[ids_label,:]
             dataPoolL = np.vstack((dataPoolL, databatch))
 
             cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test)

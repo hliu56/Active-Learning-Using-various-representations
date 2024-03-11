@@ -20,8 +20,6 @@ def plot_performance(value, variance, Alg, errorbar=False):
         xe, ye, ee = xe.flatten(), ye.flatten(), ee.flatten()
         ax.errorbar(xe, ye, yerr=ee, alpha=0.3, ls='none', ecolor=p[0].get_color(), elinewidth=3, capsize=4, capthick=3)
         offset += error_freq
-        # ax.set_xlim(0, len(MAEsmooth1[0]))  # Assuming all arrays have the same length
-        # ax.set_ylim(0, max(max(MAEsmooth1), max(MAEsmooth_std1)) * 1.1)
 
         plt.xlabel('Number of samples')
         plt.ylabel('MAE')

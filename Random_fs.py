@@ -52,26 +52,18 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
         R2_t, Model_t, MSEstart_t, _ = computeR2_train(dataPoolL_fs, X_train.iloc[:, indices], y_train, fs=True)
         R2_tS, Model_tS, MSEstart_tS, _ = computeR2_train_self(dataPoolL_fs, fs=True)
         Info = computeR2_unlabel(dataPool_fs, dataPoolL_fs, Model, fs=True)
-        # print(f'Info.shape: {Info.shape}')
-        # print(f'R2.shape {R2.shape}')
 
         R2Res = np.append(R2Res, R2, axis=0)
         MSERes = np.append(MSERes, MSEstart, axis=0)
         MAERes = np.append(MAERes, MAEstart, axis=0)
         InfoRes = np.append(InfoRes, Info, axis=0)
-        # print(f'InfoRes {InfoRes}')
-
         R2Res_t = np.append(R2Res_t, R2_t, axis=0)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
 
         for i in range(499):
-            # print(f"Iteration: {i}")
-            # print(f"DataPool shape before getBatch(): {dataPool.shape}")
-            # DataPool_ori = DataPool
+
             dataBatch_fs, dataPool_fs,Idx = getBatch(dataPool_fs, 1, fs=True)
-            # print(f"DataPool shape after getBatch(): {dataPool.shape}")
-            # dataPoolL = np.vstack((dataPoolL, dataBatch))
             dataPoolL_fs = pd.concat([dataPoolL_fs, dataBatch_fs], axis=0, ignore_index=True)
 
             # Recover features
@@ -96,23 +88,6 @@ def RandomSampling_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='
                 indices = feature_selection(dataPoolL.iloc[:, 0:-1],dataPoolL.iloc[:, -1], fs_score, i, Alg)
                 dataPoolL_fs = pd.concat([dataPoolL.iloc[:, 0:-1].iloc[:, indices],dataPoolL.iloc[:, -1]],axis=1)
                 dataPool_fs = pd.concat([dataPool.iloc[:, 0:-1].iloc[:, indices], dataPool.iloc[:, -1]],axis=1)
-
-                # cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test, fs=True)
-                # cR2_t, Model_t, cMSEstart_t,_ = computeR2_train(dataPoolL, X_train, y_train, fs=True)
-                # cR2_tS, Model_tS, cMSEstart_tS,_ = computeR2_train_self(dataPoolL, fs=True)
-                # cInfo = computeR2_unlabel(dataPool, dataPoolL, Model, fs=True)
-                
-                # # cR2, Model, cMSE, cMAE = computeR2(dataPoolL_fs, X_test.iloc[:,indices], y_test, fs=True)
-                # # cR2_t, Model_t, cMSEstart_t,_ = computeR2_train(dataPoolL_fs, X_train.iloc[:,indices], y_train, fs=True)
-                # # cR2_tS, Model_tS, cMSEstart_tS,_ = computeR2_train_self(dataPoolL_fs, fs=True)
-                # # cInfo = computeR2_unlabel(dataPool_fs, dataPoolL_fs, Model, fs=True)
-            
-                # R2Res = np.append(R2Res, cR2, axis=0)
-                # MSERes = np.append(MSERes, cMSE, axis=0)
-                # MAERes = np.append(MAERes, cMAE, axis=0)
-                # InfoRes = np.append(InfoRes, cInfo, axis=0)
-                # R2Res_t = np.append(R2Res_t, cR2_t, axis=0)
-                # R2Res_tS = np.append(R2Res_tS, cR2_tS, axis=0)
       
         R2Smooth.append(R2Res)
         MSEsmooth.append(MSERes)

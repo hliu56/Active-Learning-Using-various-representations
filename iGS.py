@@ -30,8 +30,8 @@ def iGS_alg(X, y, labeledPoolN, runs=20):
         distX = squareform(pdist(data[:,0:-1]))
         Idx = []
         Idx = SelectIdx.tolist()
-        idsTest=np.arange(0,len(y_train))
-        idsTest=np.delete(idsTest,Idx)
+        ids_label=np.arange(0,len(y_train))
+        ids_label=np.delete(ids_label,Idx)
     
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -62,16 +62,16 @@ def iGS_alg(X, y, labeledPoolN, runs=20):
                 distY[:,i]= abs(Model.predict(dataPool[:,0:-1])-dataPoolL[i,-1]*np.ones((dataPool[:,0:-1].shape[0])))
     #             print(distY.shape)
 
-            a1=distX[np.ix_(idsTest, np.array(Idx[0:n]))]
+            a1=distX[np.ix_(ids_label, np.array(Idx[0:n]))]
             a2=distY
             dist=(np.multiply(a1, a2)).min(axis=1)
 
             idx2=np.argmax(dist)
-            Idx.append(idsTest[idx2])
-            idsTest=np.delete(idsTest,idx2)
+            Idx.append(ids_label[idx2])
+            ids_label=np.delete(ids_label,idx2)
 
             databatch=dataPool[idx2,:]
-            dataPool=data[idsTest,:]
+            dataPool=data[ids_label,:]
             dataPoolL = np.vstack((dataPoolL, databatch))
 
             cR2, Model, cMSE, cMAE = computeR2(dataPoolL, X_test, y_test)

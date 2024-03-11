@@ -35,8 +35,8 @@ def iGS_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='iGS_fs'
         
         Idx = []
         Idx = SelectIdx.tolist()
-        idsTest=np.arange(0,len(y_train))
-        idsTest=np.delete(idsTest,Idx)
+        ids_label=np.arange(0,len(y_train))
+        ids_label=np.delete(ids_label,Idx)
 
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -77,20 +77,20 @@ def iGS_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='iGS_fs'
             for i in np.arange(n):
                 distY[:,i]= abs(Model.predict(dataPool_fs.iloc[:,0:-1])-dataPoolL_fs.iloc[i,-1]*np.ones((dataPool_fs.iloc[:,0:-1].shape[0])))
 
-            a1=distX[np.ix_(idsTest, np.array(Idx[0:n]))]
+            a1=distX[np.ix_(ids_label, np.array(Idx[0:n]))]
             a2=distY
             dist=(np.multiply(a1, a2)).min(axis=1)
 
             idx2=np.argmax(dist)
-            Idx.append(idsTest[idx2])
-            idsTest=np.delete(idsTest,idx2)
+            Idx.append(ids_label[idx2])
+            ids_label=np.delete(ids_label,idx2)
 
             databatch_fs=dataPool_fs.iloc[idx2,:].to_frame().T
-            dataPool_fs=data_fs.iloc[idsTest,:]
+            dataPool_fs=data_fs.iloc[ids_label,:]
             dataPoolL_fs = pd.concat([dataPoolL_fs, databatch_fs], axis=0)
             
             databatch=dataPool.iloc[idx2,:].to_frame().T
-            dataPool=data.iloc[idsTest,:]
+            dataPool=data.iloc[ids_label,:]
             dataPoolL = pd.concat([dataPoolL, databatch], axis=0)
 
             cR2, Model, cMSE, cMAE = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)

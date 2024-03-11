@@ -27,15 +27,13 @@ def GSy_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSy_fs'
         SelectIdx=np.random.choice(dataPool.index, labeledPoolN, replace=False)
         dataPoolL = dataPool.loc[SelectIdx, :]
         dataPool = dataPool.drop(SelectIdx)
-        # dataPool = dataPool.reset_index(drop=True)
 
         data = pd.concat([X_train, y_train], axis=1)
         
         Idx = []
         Idx = SelectIdx.tolist()
-        #Idx.append(SelectIdx)
-        idsTest=np.arange(0,len(y_train))
-        idsTest=np.delete(idsTest,Idx)
+        ids_label=np.arange(0,len(y_train))
+        ids_label=np.delete(ids_label,Idx)
 
         R2Res = np.empty((0,1), float)
         MSERes = np.empty((0,1), float)
@@ -63,11 +61,6 @@ def GSy_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSy_fs'
         R2_tS, ModelS, MSEstart_tS,_ = computeR2_train_self(dataPoolL_fs, fs=True)
         R2Res_tS = np.append(R2Res_tS, R2_tS, axis=0)
 
-        
-
-        # # get model with fewer features
-        # _, Model_fs, _, _ = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
-
         for n in np.arange(10, 509):
 
             distY=np.zeros((dataPool_fs.iloc[:,0:-1].shape[0],n))
@@ -78,14 +71,14 @@ def GSy_alg_fs(X, y, labeledPoolN, runs=20, freq=10, fs_score=0.98, Alg='GSy_fs'
             dist=distY.min(axis=1)
 
             idx2=np.argmax(dist)
-            idsTest=np.delete(idsTest,idx2)
+            ids_label=np.delete(ids_label,idx2)
 
             databatch_fs=dataPool_fs.iloc[idx2,:].to_frame().T
-            dataPool_fs=data_fs.iloc[idsTest,:]
+            dataPool_fs=data_fs.iloc[ids_label,:]
             dataPoolL_fs = pd.concat([dataPoolL_fs, databatch_fs], axis=0)
             
             databatch=dataPool.iloc[idx2,:].to_frame().T
-            dataPool=data.iloc[idsTest,:]
+            dataPool=data.iloc[ids_label,:]
             dataPoolL = pd.concat([dataPoolL, databatch], axis=0)
 
             cR2, Model, cMSE, cMAE = computeR2(dataPoolL_fs, X_test.iloc[:, indices], y_test, fs=True)
