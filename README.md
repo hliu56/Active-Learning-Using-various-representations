@@ -21,4 +21,4 @@ The data is in 'Data' folder, which contains input features and output property 
 - pot
 
 ## Licensing, Authors, and Acknowledgements
-This repository is on MIT license.
+This repository is on Apache License 2.0 license.
