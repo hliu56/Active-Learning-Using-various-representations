@@ -13,7 +13,7 @@ def normalized_data(df):
     x_scaled = standard_scaler.fit_transform(x)
     df_refine_standardize = pd.DataFrame(x_scaled)
     df_refine_standardize.columns=df.columns
-    return df_refine_standardize
+    return df_refine_standardize, standard_scaler
 
 
 def get_input(myfile):
