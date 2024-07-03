@@ -1,9 +1,9 @@
 # Active-Learning-Using-various-representations
 
-# This repository if for the active learning strategy implemented on various data representations in organic photovoltaics.
+# This repository is for the active learning strategy implemented on various data representations in organic photovoltaics.
 
-## Data desciption
-The data is in 'Data' folder, which contain input features and output property Jsc
+## Data description
+The data is in 'Data' folder, which contains input features and output property Jsc
 
 ## Usage
 - Run main.py by selecting different active learning algorithms
@@ -21,4 +21,4 @@ The data is in 'Data' folder, which contain input features and output property J
 - pot
 
 ## Licensing, Authors, and Acknowledgements
-This repository is on MIT license.
+This repository is on Apache License 2.0 license.
