@@ -23,7 +23,7 @@ The data is in 'Data' folder, which contains input features and output property 
 ## Citation
 
 If you use this repository in your research, please cite it as follows:
-
+`
 @software{hliu_OPV2D_for_Active_2024,
    author = {Liu, Hao},
    doi = {10.5281/zenodo.12701801},
@@ -33,6 +33,7 @@ If you use this repository in your research, please cite it as follows:
    version = {0.1},
    year = {2024}
 }
+`
 
 ## Licensing, Authors, and Acknowledgements
 This repository is on Apache License 2.0 license.
