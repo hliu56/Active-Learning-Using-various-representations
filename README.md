@@ -20,5 +20,21 @@ The data is in 'Data' folder, which contains input features and output property 
 - scipy
 - pot
 
+## Citation
+
+If you use this repository in your research, please cite it as follows:
+
+@software{hliu_OPV2D_for_Active_2024,
+   author = {Liu, Hao},
+   doi = {10.5281/zenodo.12701801},
+   month = jul,
+   title = {{Active Learning Using Various Representations OPV}},
+   url = {https://github.com/hliu56/Active-Learning-Using-various-representations},
+   version = {0.1},
+   year = {2024}
+}
+
 ## Licensing, Authors, and Acknowledgements
 This repository is on Apache License 2.0 license.
+
+
